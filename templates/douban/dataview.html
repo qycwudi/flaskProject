@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Top250电影数据分析</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+  <meta name="referrer" content="never">
+  <!-- Favicons -->
+  <link href="/static/assets/img/favicon.png" rel="icon">
+  <link href="/static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i,900" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
+    <script src="/static/assets/js/echarts.min.js"></script>
+</head>
+<body>
+
+
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="container">
+
+      <div class="logo float-left">
+        <h1 class="text-light"><a href="/"><span>Top250</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+      </div>
+
+      <nav class="nav-menu float-right d-none d-lg-block">
+          <ul>
+          <li class="active"><a href="/">首页 <i class="la la-angle-down"></i></a></li>
+          <li><a href="/movie">电影</a></li>
+          <li><a href="/dataview">数据</a></li>
+              <li class="drop-down"><a >词云</a>
+            <ul>
+                <li><a href="/wordcloud/gjz">关键词</a></li>
+                <li><a href="/wordcloud/guojia">国家</a></li>
+                <li><a href="/wordcloud/leibie">电影类别</a></li>
+            </ul>
+          </li>
+          <li><a href="/qiangyuecheng">作者</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+
+    </div>
+  </header><!-- End Header -->
+  <main id="main">
+   <!-- ======= Services======= -->
+    <section id="services" class="services">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>评分分布</h2>
+        </div>
+       <div class="row">
+            <div id="echart" style="width: 100%;height:400px;"></div>
+       </div>
+      </div>
+    </section><!-- End Services Section -->
+
+  </main><!-- End #main -->
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/static/assets/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="/static/assets/vendor/php-email-form/validate.js"></script>
+  <script src="/static/assets/vendor/jquery-sticky/jquery.sticky.js"></script>
+  <script src="/static/assets/vendor/venobox/venobox.min.js"></script>
+  <script src="/static/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="/static/assets/vendor/counterup/counterup.min.js"></script>
+  <script src="/static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/static/assets/vendor/aos/aos.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/static/assets/js/main.js"></script>
+<script language="JavaScript">
+    // Generate data
+    var myChart = echarts.init(document.getElementById('echart'));
+// option
+option = {
+    backgroundColor: '#0f375f',
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+         },
+        formatter: function (params) {
+            {#alert(JSON.stringify(params[0]));#}
+            showstr = ""
+            if (params.length>0){
+                showstr = params[0].name+"<br/>"
+            }
+            if(params.length==3){
+                 showstr += params[0].marker+" "+params[0].seriesName+": "+params[0].data+"<br/>"
+            }else if(params.length==4){
+                     showstr += params[0].marker+" "+params[0].seriesName+": "+params[0].data+"<br/>"
+                     showstr += params[1].marker+" "+params[1].seriesName+": "+params[1].data+"<br/>"
+
+            }else {
+                if(params[0].seriesName=="dotted"){
+                    return ""
+                }
+                showstr += params[0].marker+" "+params[0].seriesName+": "+params[0].data+"<br/>"
+            }
+
+            return showstr
+        }
+
+    },
+    legend: {
+        data: ['评价人数', '电影数量'],
+        textStyle: {
+            color: '#ccc'
+        }
+    },
+    xAxis: {
+        data: {{ pfmap.pf }},
+        axisLine: {
+            lineStyle: {
+                color: '#ccc'
+            }
+        }
+    },
+    yAxis: [
+        {
+            name:'人',
+            type:'value',
+            max:100,
+            splitLine: {show: false},
+            axisLine: {
+                onZero: false,
+                lineStyle: {
+                    color: '#FFFFFF'
+                },
+            }
+        },
+        {
+            name: '人',
+            type: 'value',
+            splitLine: {show: false},
+            axisLine: {
+                onZero: false,
+                lineStyle: {
+                    color: '#FFFFFF'
+                },
+            }
+        },
+    ],
+    series: [{
+        name: '评价人数',
+        type: 'line',
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 15,
+        data: {{ pjnum }},
+        yAxisIndex: 1,
+    }, {
+        name: '电影数量',
+        type: 'bar',
+        barWidth: 10,
+        itemStyle: {
+            barBorderRadius: 5,
+            color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                    {offset: 0, color: '#14c8d4'},
+                    {offset: 1, color: '#43eec6'}
+                ]
+            )
+        },
+        data: {{ pfmap.sum }},
+        yAxisIndex: 0,
+    },
+        {
+        name: '评价人数',
+        type: 'bar',
+        barGap: '-100%',
+        barWidth: 10,
+        itemStyle: {
+            color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                    {offset: 0, color: 'rgba(20,200,212,0.5)'},
+                    {offset: 0.2, color: 'rgba(20,200,212,0.2)'},
+                    {offset: 1, color: 'rgba(20,200,212,0)'}
+                ]
+            )
+        },
+        z: -12,
+        data: {{ pjnum }},
+            yAxisIndex: 1,
+    }, {
+        name: 'dotted',
+        type: 'pictorialBar',
+        symbol: 'rect',
+        itemStyle: {
+            color: '#0f375f'
+        },
+        symbolRepeat: true,
+        symbolSize: [12, 4],
+        symbolMargin: 1,
+        z: -10,
+        data: {{ pjnum }},
+            yAxisIndex: 1,
+    }
+    ]
+};
+myChart.setOption(option);
+</script>
+</body>
+</html>
