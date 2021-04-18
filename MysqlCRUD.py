@@ -2,7 +2,7 @@ import pymysql
 import json
 def connectDB():
     print("连接数据库")
-    db = pymysql.connect("101.200.201.196",user="root",passwd="qycssg!0",db="db_doubandy",charset='utf8')
+    db = pymysql.connect("101.200.自己的mysql服务.196",user="root",passwd="***写自己的密码****",db="db_doubandy",charset='utf8')
     print("连接成功")
     return db
 
